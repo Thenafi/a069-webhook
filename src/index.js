@@ -157,7 +157,7 @@ async function sendToSlack(message, env) {
 }
 
 /**
- * Handle GET requests for status and control
+ * Handle GET requests for status
  */
 function handleGetRequest(url, env) {
   const path = url.pathname;
@@ -172,40 +172,12 @@ function handleGetRequest(url, env) {
       channel: env.SLACK_CHANNEL,
       endpoints: {
         status: "/status",
-        webhook: "/ (POST)",
-        toggle_help: "/toggle?action=enable|disable&key=YOUR_ADMIN_KEY"
+        webhook: "/ (POST)"
       }
     }), {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
-  }
-  
-  // Toggle endpoint (requires admin key for security)
-  if (path === "/toggle") {
-    const action = url.searchParams.get("action");
-    const adminKey = url.searchParams.get("key");
-    
-    // Simple admin key check (you can set this as a secret)
-    if (adminKey !== env.ADMIN_KEY) {
-      return new Response(JSON.stringify({
-        error: "Invalid admin key"
-      }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-    
-    if (action === "enable" || action === "disable") {
-      return new Response(JSON.stringify({
-        message: `To ${action} notifications, update the SLACK_NOTIFICATIONS_ENABLED environment variable to "${action === "enable" ? "true" : "false"}" and redeploy.`,
-        current_status: isEnabled ? "enabled" : "disabled",
-        note: "Environment variables cannot be changed at runtime. Use 'wrangler secret put' or update wrangler.toml and redeploy."
-      }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
   }
   
   return new Response("Not found", { status: 404 });
