@@ -52,7 +52,9 @@ After deployment, Wrangler will show you the worker URL. Use this URL as your we
 ## Control System (On/Off Switch)
 
 ### Check Status
+
 Visit your worker URL to see current status:
+
 ```
 https://your-worker.workers.dev/status
 ```
@@ -60,22 +62,25 @@ https://your-worker.workers.dev/status
 ### Toggle Notifications
 
 **Method 1: Environment Variable (Recommended)**
+
 ```bash
 # To disable notifications
 wrangler secret put SLACK_NOTIFICATIONS_ENABLED
 # Enter: false
 
-# To enable notifications  
+# To enable notifications
 wrangler secret put SLACK_NOTIFICATIONS_ENABLED
 # Enter: true
 ```
 
 **Method 2: Update wrangler.toml and redeploy**
+
 ```toml
 SLACK_NOTIFICATIONS_ENABLED = "false"  # or "true"
 ```
 
 ### Emergency Stop
+
 Set `SLACK_NOTIFICATIONS_ENABLED = "false"` to immediately stop all Slack notifications while still accepting webhooks.
 
 ## Development

@@ -10,4 +10,6 @@ SLACK_NOTIFICATIONS_ENABLED = "true"
 SLACK_CHANNEL = "C04SDEC0UHZ"
 SLACK_NOTIFICATIONS_ENABLED = "true"
 
-# Bot token will be added as a secret via: wrangler secret put SLACK_BOT_TOKEN
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true

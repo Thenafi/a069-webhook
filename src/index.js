@@ -5,12 +5,12 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // Handle GET requests for status checking
     if (request.method === "GET") {
       return handleGetRequest(url, env);
     }
-    
+
     // Only handle POST requests for webhooks
     if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405 });
@@ -50,14 +50,14 @@ export default {
 async function handleMessageReceived(webhookData, env) {
   // Check if Slack notifications are enabled
   const isEnabled = env.SLACK_NOTIFICATIONS_ENABLED === "true";
-  
+
   if (!isEnabled) {
     console.log("Slack notifications are DISABLED - skipping message");
     return;
   }
-  
+
   console.log("Slack notifications are ENABLED - processing message");
-  
+
   const { data } = webhookData;
 
   // Extract relevant information
@@ -162,23 +162,26 @@ async function sendToSlack(message, env) {
 function handleGetRequest(url, env) {
   const path = url.pathname;
   const isEnabled = env.SLACK_NOTIFICATIONS_ENABLED === "true";
-  
+
   // Status endpoint
   if (path === "/status" || path === "/") {
-    return new Response(JSON.stringify({
-      service: "A069 Webhook Handler",
-      status: "running",
-      slack_notifications: isEnabled ? "enabled" : "disabled",
-      channel: env.SLACK_CHANNEL,
-      endpoints: {
-        status: "/status",
-        webhook: "/ (POST)"
+    return new Response(
+      JSON.stringify({
+        service: "A069 Webhook Handler",
+        status: "running",
+        slack_notifications: isEnabled ? "enabled" : "disabled",
+        channel: env.SLACK_CHANNEL,
+        endpoints: {
+          status: "/status",
+          webhook: "/ (POST)",
+        },
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
       }
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    );
   }
-  
+
   return new Response("Not found", { status: 404 });
 }
